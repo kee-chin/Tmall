@@ -1,8 +1,10 @@
 package com.chinkee.tmall.util;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.*;
 import java.io.File;
+import java.io.IOException;
 
 public class ImageUtil {
     public static BufferedImage change2jpg(File file){
@@ -37,5 +39,18 @@ public class ImageUtil {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static void resizeImage(File srcFile, int width, int height, File destFile) {
+        try{
+            if(!destFile.getParentFile().exists())
+                destFile.getParentFile().mkdirs();
+
+            Image image = ImageIO.read(srcFile);
+            image = resizeImage(image, width, height);
+            ImageIO.write((RenderedImage) image, "jpg", destFile);//渲染图像
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

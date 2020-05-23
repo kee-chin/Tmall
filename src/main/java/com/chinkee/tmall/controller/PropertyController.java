@@ -22,6 +22,7 @@ public class PropertyController {
     @Autowired
     PropertyService propertyService;
 
+
     @RequestMapping("admin_property_list")
     public String list(int cid, Model model, Page page){
         // Category category = new Category(); // cid，这样并没有抓取cid数据
@@ -69,7 +70,7 @@ public class PropertyController {
     public String update(Property property){ // 获取Property对象
         propertyService.update(property); // 通过propertyService更新这个对象到数据库
         // 客户端跳转到admin_property_list，并带上参数cid
-        return "redirect:admin_property_list?cid=" + property.getCid();
+        return "redirect:admin_property_list?cid=" + property.getCid();//Property对象作用
     }
 
     @RequestMapping("admin_property_delete")
@@ -77,6 +78,6 @@ public class PropertyController {
         Property property = propertyService.get(id); // 根据id获取Property对象
         propertyService.delete(id); // 借助propertyService删除这个对象对应的数据
         // 客户端跳转到admin_property_list，并带上参数cid
-        return "redirect:admin_property_list?cid=" + property.getCid();
+        return "redirect:admin_property_list?cid=" + property.getCid();// Property对象作用
     }
 }

@@ -28,6 +28,8 @@ public class Product {
 
     private Category category;
 
+    private ProductImage firstProductImage;
+
     public Integer getId() {
         return id;
     }
@@ -218,5 +220,13 @@ public class Product {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public ProductImage getFirstProductImage() {
+        return firstProductImage;
+    }
+
+    public void setFirstProductImage(ProductImage firstProductImage) {
+        this.firstProductImage = firstProductImage;
     }
 }

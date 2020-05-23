@@ -7,7 +7,7 @@ import java.util.List;
 public interface PropertyService {
 
     // C:P为一对多，在业务上需要查询某个分类下的属性，所以list方法会带上对应分类的id。
-    List<Property> list(int cid); // 获取列表，返回一列表对象，需要返回值
+    List<Property> list(int cid); // 获取列表，返回一列表对象，需要返回值，内嵌在分类页面
 
     void add(Property property); // 增，增加整个对象
 
