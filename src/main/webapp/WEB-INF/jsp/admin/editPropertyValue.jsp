@@ -26,13 +26,12 @@
             var parentSpan = $(this).parent("span");
             <!--把边框的颜色修改为黄色，表示正在修改的意思-->
             parentSpan.css("border","1px solid yellow");
-            <!--借助JQuery的ajax函数 $.post，把id和值，提交到admin_propertyValue_update
-            即调用-->
+            <!--借助JQuery的ajax函数 $.post，把id和值，提交到admin_propertyValue_update-->
             $.post(
                 page,
                 {"value":value,"id":pvid},
-                <!--浏览器判断如果返回值是"success",那么就把边框设置为绿色，表示修改成功，
-                否则设置为红色，表示修改失败-->
+                <!--浏览器判断如果返回值是"success",那么就把边框设置为绿色，表示修改成功-->
+                <!--否则设置为红色，表示修改失败-->
                 function(result){
                     if("success"==result)
                         parentSpan.css("border","1px solid green");

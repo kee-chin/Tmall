@@ -13,5 +13,5 @@ public interface PropertyValueService {
 
     void init(Product product);
 
-    void update(PropertyValue propertyValue);
+    void update(PropertyValue propertyValue); //
 }

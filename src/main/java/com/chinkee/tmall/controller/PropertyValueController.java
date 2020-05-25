@@ -29,6 +29,7 @@ public class PropertyValueController {
         Product product = productService.get(pid);
         // 初始化属性值： propertyValueService.init(p)。
         // 因为在第一次访问的时候，这些属性值是不存在的，需要进行初始化。
+        // 后面访问时，就调用get方法，所以init方法中调用get方法
         propertyValueService.init(product);
         // 根据产品，获取其对应的属性值集合
         List<PropertyValue> propertyValues = propertyValueService.list(product.getId());

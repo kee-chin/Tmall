@@ -31,18 +31,18 @@ public class PropertyValueServiceImpl implements PropertyValueService {
             Property property = propertyService.get(propertyValue.getPtid());
             propertyValue.setProperty(property);
         }
-        return propertyValues; // 获得某类产品的所有属性值
+        return propertyValues; // 列出某种产品的所有属性值
     }
 
     @Override // 根据属性id和产品id获取PropertyValue对象
-    public PropertyValue get(int ptid, int pid) {
+    public PropertyValue get(int ptid, int pid) { // get方法只有init方法调用
         PropertyValueExample valueExample = new PropertyValueExample();
         valueExample.createCriteria().andPtidEqualTo(ptid).andPidEqualTo(pid);
         List<PropertyValue> propertyValues
                 = propertyValueMapper.selectByExample(valueExample);
         // isEmpty()分配了内存空间，值为空，是绝对的空，是一种有值（值 = 空）
         if(propertyValues.isEmpty()){
-            return null; // 如果是没有PropertyValue对象，则生成一组属性值
+            return null; // 如果是没有PropertyValue对象，在init方法则生成一组属性值
         }
         // 获得某种产品的PropertyValue对象，get(0)最先的一组属性值，
         return propertyValues.get(0);
