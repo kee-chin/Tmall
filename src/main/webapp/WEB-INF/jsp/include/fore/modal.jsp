@@ -1,9 +1,12 @@
 <!-- 模仿天猫整站ssm 教程 为how2j.cn 版权所有-->
 <!-- 本教程仅用于学习使用，切勿用于非法用途，由此引起一切后果与本站无关-->
-<!-- 供购买者学习，请勿私自传播，否则自行承担相关法律责任-->
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 		 pageEncoding="UTF-8" isELIgnored="false"%>
+
+<!-- 提供了两个模态窗口 -->
+<!-- 登录模态窗口：当用户在未登录状态，于产品页点击购买的时候会弹出 -->
+<!-- 删除模态窗口：当用户在我的订单页面,和购物车页面进行删除操作的时候，就会弹出模态删除窗口 -->
 
 <div class="modal " id="loginModal" tabindex="-1" role="dialog" >
 	<div class="modal-dialog loginDivInProductPageModalDiv">

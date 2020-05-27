@@ -1,6 +1,6 @@
 <!-- 模仿天猫整站ssm 教程 为how2j.cn 版权所有-->
 <!-- 本教程仅用于学习使用，切勿用于非法用途，由此引起一切后果与本站无关-->
-<!-- 供购买者学习，请勿私自传播，否则自行承担相关法律责任-->
+
 
 <!DOCTYPE html>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -9,6 +9,9 @@
 <%@ taglib prefix='fmt' uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
+<!-- c 通常用于条件判断和遍历 -->
+<!-- fmt 用于格式化日期和货币 -->
+<!-- fn 用于校验长度 -->
 
 
 <html>

@@ -1,0 +1,7 @@
+在css目录里有3个子目录
+1. back
+这个目录里有一个style.css,这是后台界面用到的样式
+2. bootstrap
+这里存放的是bootstrap的css样式文件
+3. fore
+这个目录里也有一个style.css,这是前台界面用到的样式

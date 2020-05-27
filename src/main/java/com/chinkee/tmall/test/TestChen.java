@@ -14,5 +14,7 @@ public class TestChen {
             System.out.println("a地址就等于b");
         if(a.equals(b))
             System.out.println("a的值等于b");
+
+        System.out.println(!a.isEmpty());
     }
 }

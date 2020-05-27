@@ -6,7 +6,7 @@
 	pageEncoding="UTF-8" isELIgnored="false"%>
 	
 <div id="carousel-of-product"  class="carousel-of-product carousel slide1" data-ride="carousel">
-  <!-- Indicators -->
+  <!-- Indicators 指针 -->
   <ol class="carousel-indicators">
     <li data-target="#carousel-of-product" data-slide-to="0" class="active"></li>
     <li data-target="#carousel-of-product" data-slide-to="1"></li>
@@ -14,7 +14,7 @@
     <li data-target="#carousel-of-product" data-slide-to="3"></li>
   </ol>
 
-  <!-- Wrapper for slides -->
+  <!-- Wrapper for slides 幻灯片放映包 -->
   <div class="carousel-inner" role="listbox">
     <div class="item active">
       <img class="carousel carouselImage" src="img/lunbo/1.jpg" >

@@ -1,6 +1,5 @@
 <!-- 模仿天猫整站ssm 教程 为how2j.cn 版权所有-->
 <!-- 本教程仅用于学习使用，切勿用于非法用途，由此引起一切后果与本站无关-->
-<!-- 供购买者学习，请勿私自传播，否则自行承担相关法律责任-->
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 		 pageEncoding="UTF-8" isELIgnored="false"%>
@@ -9,6 +8,8 @@
 <script>
     $(function(){
 
+        <!-- 注册页面的主体功能，用于提交账号密码。 在提交之前会进行为空验证，以及密码是否一致验证。-->
+        <!-- 这段代码用于当账号提交到服务端 -->
         <c:if test="${!empty msg}">
         $("span.errorMessage").html("${msg}");
         $("div.registerErrorMessageDiv").css("visibility","visible");
@@ -42,9 +43,8 @@
 </script>
 
 
-
+<!-- form提交数据到路径foreregister,导致ForeController.register()方法被调用-->
 <form method="post" action="foreregister" class="registerForm">
-
 
 	<div class="registerDiv">
 		<div class="registerErrorMessageDiv">

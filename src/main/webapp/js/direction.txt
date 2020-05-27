@@ -1,0 +1,5 @@
+js目录下有两个子目录
+/bootstrap
+bootstrap用到的js文件
+/jquery
+jquery用到的js文件

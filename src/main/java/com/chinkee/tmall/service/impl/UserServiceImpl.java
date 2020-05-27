@@ -41,4 +41,26 @@ public class UserServiceImpl implements UserService {
     public void update(User user) {
         userMapper.updateByPrimaryKeySelective(user);
     }
+
+    @Override
+    public boolean isExist(String name) {
+        UserExample userExample = new UserExample();
+        userExample.createCriteria().andNameEqualTo(name);
+        List<User> result = userMapper.selectByExample(userExample);
+        if(!result.isEmpty())
+            return true;
+        return false;
+    }
+
+    @Override
+    public User get(String name, String password) {
+        UserExample userExample = new UserExample();
+        userExample.createCriteria()
+                .andNameEqualTo(name).andPasswordEqualTo(password);
+        // mapper中的类型就是List<User>
+        List<User> users = userMapper.selectByExample(userExample);
+        if(users.isEmpty())
+            return null;
+        return users.get(0);
+    }
 }

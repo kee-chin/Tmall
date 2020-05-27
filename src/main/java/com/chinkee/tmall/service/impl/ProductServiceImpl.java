@@ -11,6 +11,7 @@ import com.chinkee.tmall.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -92,4 +93,38 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
+    // 放在哪个Service里，是看主要查询的那个表。 这里查询的是Product表，
+    // 所以就放在ProductService里了，而Category表本身没有被查询。
+    @Override // 为多个分类填充产品集合
+    public void fill(List<Category> categories) {
+        for (Category category:categories){
+            fill(category);
+        }
+    }
+
+    @Override // 为分类填充产品集合
+    public void fill(Category category) {
+        List<Product> products = list(category.getId());
+        category.setProducts(products);
+    }
+
+    // 为多个分类填充推荐产品集合，即把分类下的产品集合，
+    // 按照8个为一行，拆成多行，以利于后续页面上进行显示
+    @Override
+    public void fillByRow(List<Category> categories) {
+        int productNumberEachRow = 8;
+
+        for(Category category:categories){
+            List<Product> products = category.getProducts();
+            List<List<Product>> productsByRow = new ArrayList<>();
+
+            for (int i=0; i<products.size(); i += productNumberEachRow){
+                int size = i + productNumberEachRow;
+                size = size>products.size() ? products.size() : size;
+                List<Product> productsOfEachRow = products.subList(i,size);
+                productsByRow.add(productsOfEachRow);
+            }
+            category.setProductsByRow(productsByRow);
+        }
+    }
 }
