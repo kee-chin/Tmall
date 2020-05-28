@@ -27,4 +27,8 @@ public interface ProductService {
     // 按照8个为一行，拆成多行，以利于后续页面上进行显示
     void fillByRow(List<Category> categories);
 
+    // 为产品设置销量和评价数量的方法
+    void setSaleAndReviewNumber(Product product);
+    void setSaleAndReviewNumber(List<Product> products);
+
 }

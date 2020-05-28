@@ -36,7 +36,11 @@ $(function(){
             num=1;
         $(".productNumberSetting").val(num);
     });
-     
+
+    // 立即购买和加入购物车这两个按钮的监听
+    // --这两个按钮都会通过JQuery的.get方法，用异步ajax的方式访问forecheckLogin，
+    // 获取当前是否登录状态。如果返回的不是"success" 即表明是未登录状态，
+    // 那么就会打开登录的模态窗口
     $(".addCartButton").removeAttr("disabled");
     $(".addCartLink").click(function(){
         var page = "forecheckLogin";
@@ -232,7 +236,7 @@ $(function(){
                 <a href="#nowhere">七天无理由退换</a>
             </span>
         </div>    
-         
+
         <div class="buyDiv">
             <a class="buyLink" href="forebuyone?pid=${p.id}"><button class="buyButton">立即购买</button></a>
             <a href="#nowhere" class="addCartLink"><button class="addCartButton"><span class="glyphicon glyphicon-shopping-cart"></span>加入购物车</button></a>

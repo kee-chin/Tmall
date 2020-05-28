@@ -21,6 +21,7 @@ public class Product {
 
     private Date createDate;
 
+    // 非数据库字段
     private Category category;
 
     private ProductImage firstProductImage;

@@ -14,6 +14,7 @@ public class Review {
 
     private Date createDate;
 
+    // 非数据库字段
     private User user;
 
     public Integer getId() {

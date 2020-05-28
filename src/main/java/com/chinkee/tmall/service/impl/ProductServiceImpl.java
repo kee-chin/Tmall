@@ -5,9 +5,7 @@ import com.chinkee.tmall.pojo.Category;
 import com.chinkee.tmall.pojo.Product;
 import com.chinkee.tmall.pojo.ProductExample;
 import com.chinkee.tmall.pojo.ProductImage;
-import com.chinkee.tmall.service.CategoryService;
-import com.chinkee.tmall.service.ProductImageService;
-import com.chinkee.tmall.service.ProductService;
+import com.chinkee.tmall.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +21,10 @@ public class ProductServiceImpl implements ProductService {
     CategoryService categoryService;
     @Autowired
     ProductImageService productImageService;
+    @Autowired
+    OrderItemService orderItemService;
+    @Autowired
+    ReviewService reviewService;
 
     @Override
     public List list(int cid) {
@@ -125,6 +127,24 @@ public class ProductServiceImpl implements ProductService {
                 productsByRow.add(productsOfEachRow);
             }
             category.setProductsByRow(productsByRow);
+        }
+    }
+
+    @Override
+    public void setSaleAndReviewNumber(Product product) {
+        // 根据产品从订单项获取销售量
+        int saleCount = orderItemService.getSaleCount(product.getId());
+        product.setSaleCount(saleCount);
+
+        // 根据产品从评价获取销售量
+        int reviewCount = reviewService.getCount(product.getId());
+        product.setReviewCount(reviewCount);
+    }
+
+    @Override
+    public void setSaleAndReviewNumber(List<Product> products) {
+        for (Product product:products){
+            setSaleAndReviewNumber(product);
         }
     }
 }

@@ -8,13 +8,13 @@ public class TestChen {
         System.out.println(z);// int包括正负整数
 
         String a = new String();
-        String b = "";
+        String b = "ch";
 
         if(a == b)
             System.out.println("a地址就等于b");
         if(a.equals(b))
             System.out.println("a的值等于b");
 
-        System.out.println(!a.isEmpty());
+        System.out.println(b.substring(0,1) + "*");
     }
 }

@@ -99,4 +99,23 @@ public class User {
     public void setPassword(String password) {
         this.password = password == null ? null : password.trim();
     }
+
+    // 用于在显示评价者的时候进行匿名显示
+    public String getAnonymousName() {
+        if (null == name)
+            return null;
+
+        if (name.length() <= 1)
+            return "*";
+
+        if (name.length() == 2)
+            return name.substring(0, 1) + "*"; // substring返回字符串的子字符串(第一个字符+*，c*)
+
+        char[] chars = name.toCharArray();
+        for (int i = 0; i < chars.length - 1; i++) {
+            chars[i] = '*';
+        }
+        return new String(chars);
+    }
+
 }

@@ -1,15 +1,13 @@
 package com.chinkee.tmall.controller;
 
-import com.chinkee.tmall.pojo.Category;
-import com.chinkee.tmall.pojo.User;
-import com.chinkee.tmall.service.CategoryService;
-import com.chinkee.tmall.service.ProductService;
-import com.chinkee.tmall.service.UserService;
+import com.chinkee.tmall.pojo.*;
+import com.chinkee.tmall.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.HtmlUtils;
 
 import javax.servlet.http.HttpSession;
@@ -25,6 +23,13 @@ public class ForeController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    ProductImageService productImageService;
+    @Autowired
+    PropertyValueService propertyValueService;
+    @Autowired
+    ReviewService reviewService;
 
     @RequestMapping("forehome")
     public String home(Model model){
@@ -86,6 +91,60 @@ public class ForeController {
     public String logout(HttpSession httpSession){
         httpSession.removeAttribute("user"); // 在session中去掉"user"
         return "redirect:forehome";
+    }
+
+    @RequestMapping("foreproduct")
+    public String product(int pid, Model model){
+        // int与integer的区别从大的方面来说就是基本数据类型与其包装类的区别
+        // int初始值为0，Integer初始值为null
+        // 根据pid获取Product对象
+        Product product = productService.get(pid); // Integer product.getId() and int pid
+
+        // 根据对象，获取这个产品对应的单个图片集合
+        List<ProductImage> productSingleImages
+                = productImageService.list(product.getId(), ProductImageService.type_single);
+        // 根据对象，获取这个产品对应的详细图片集合
+        List<ProductImage> productDetailImages
+                = productImageService.list(product.getId(), ProductImageService.type_detail);
+        product.setProductSingleImages(productSingleImages); // 产品设置图片属性
+        product.setProductDetailImages(productDetailImages);
+
+        // 获取产品的所有属性值
+        List<PropertyValue> propertyValues = propertyValueService.list(product.getId());
+        // 获取产品对应的所有的评价
+        List<Review> reviews = reviewService.list(product.getId());
+        // 设置产品的销量和评价数量
+        productService.setSaleAndReviewNumber(product);
+
+        model.addAttribute("reviews", reviews);
+        model.addAttribute("p", product);
+        model.addAttribute("pvs", propertyValues);
+        return "fore/product";
+
+    }
+
+    @RequestMapping("forecheckLogin")
+    @ResponseBody // 异步ajax的方式访问
+    public String checkLogin(HttpSession httpSession){
+        User user = (User) httpSession.getAttribute("user");
+        if(null == user)
+            return "fail";
+        return "success";
+    }
+
+    @RequestMapping("foreloginAjax")
+    @ResponseBody // 异步ajax的方式访问
+    public String loginAjax(@RequestParam("name") String name,
+                            @RequestParam("password") String password,
+                            HttpSession httpSession){
+        name = HtmlUtils.htmlEscape(name);
+
+        User user = userService.get(name, password);
+        if(user == null)
+            return "fail";
+
+        httpSession.setAttribute("user", user);
+        return "success";
     }
 
 }
