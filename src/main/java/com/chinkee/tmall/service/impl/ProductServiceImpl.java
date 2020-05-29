@@ -147,4 +147,19 @@ public class ProductServiceImpl implements ProductService {
             setSaleAndReviewNumber(product);
         }
     }
+
+    @Override
+    public List<Product> search(String keyword) {
+        ProductExample productExample = new ProductExample();
+        // 通过关键字进行模糊查询
+        productExample.createCriteria().andNameLike("%" + keyword + "%");
+        productExample.setOrderByClause("id desc");
+        List result = productMapper.selectByExample(productExample);
+
+        setFirstProductImage(result);
+
+        setCategory(result);
+
+        return result;
+    }
 }

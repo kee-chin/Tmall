@@ -105,4 +105,16 @@ public class OrderItemServiceImpl implements OrderItemService {
         }
         return result;
     }
+
+    @Override
+    public List<OrderItem> listByUser(int uid) {
+        OrderItemExample itemExample = new OrderItemExample();
+        itemExample.createCriteria().andUidEqualTo(uid)
+                .andOidIsNull(); // oid不为空的就已经是购买过的订单项
+        List<OrderItem> list = orderItemMapper.selectByExample(itemExample);
+
+        setProduct(list);
+
+        return list;
+    }
 }

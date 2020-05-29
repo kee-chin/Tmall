@@ -20,7 +20,7 @@
 				<tr>
 					<td class="firstColumn">详细地址<span class="redStar">*</span></td>
 					
-					<td><textarea name="address" placeholder="建议您如实填写详细收货地址，例如接到名称，门牌好吗，楼层和房间号等信息"></textarea></td>
+					<td><textarea name="address" placeholder="建议您如实填写详细收货地址，例如接到名称，门牌号码，楼层和房间号等信息"></textarea></td>
 				</tr>
 				<tr>
 					<td>邮政编码</td>
@@ -72,6 +72,8 @@
 				</tr>
 			</thead>
 			<tbody class="productListTableTbody">
+			<!--遍历出订单项集合 ois 中的订单项数据-->
+			<!--从立即购买跳转到结算页面来只会有一件产品-->
 				<c:forEach items="${ois}" var="oi" varStatus="st" >
 					<tr class="orderItemTR">
 						<td class="orderItemFirstTD"><img class="orderItemImg" src="img/productSingle_middle/${oi.product.firstProductImage.id}.jpg"></td>

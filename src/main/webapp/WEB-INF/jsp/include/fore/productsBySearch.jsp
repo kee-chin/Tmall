@@ -31,8 +31,8 @@
 	</div>
 	</c:forEach>
 	<c:if test="${empty ps}">
-	<div class="noMatch">没有满足条件的产品<div>
+	<div class="noMatch">没有满足条件的产品</div>
 		</c:if>
 
 		<div style="clear:both"></div>
-	</div>
+</div>

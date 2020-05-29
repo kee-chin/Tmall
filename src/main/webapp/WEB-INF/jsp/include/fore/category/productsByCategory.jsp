@@ -11,7 +11,7 @@
 <c:if test="${empty param.categorycount}">
 	<c:set var="categorycount" scope="page" value="100"/>
 </c:if>
-
+<!--categorycount，这个是用于测试的，在访问地址的时候加这个参数，测试时不用显示全部数据-->
 <c:if test="${!empty param.categorycount}">
 	<c:set var="categorycount" scope="page" value="${param.categorycount}"/>
 </c:if>

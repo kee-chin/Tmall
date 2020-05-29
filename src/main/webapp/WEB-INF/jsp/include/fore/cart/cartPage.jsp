@@ -30,6 +30,7 @@ $(function(){
 				    {"oiid":deleteOrderItemid},
 				    function(result){
 						if("success"==result){
+							<!--添加后变灰-->
 							$("tr.cartProductItemTR[oiid="+deleteOrderItemid+"]").hide();
 						}
 						else{

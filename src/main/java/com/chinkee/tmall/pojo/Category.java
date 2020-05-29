@@ -8,6 +8,7 @@ public class Category {
 
     private String name;
 
+    // 非数据库生成字段
     private List<Product> products;
 
     private List<List<Product>> productsByRow;

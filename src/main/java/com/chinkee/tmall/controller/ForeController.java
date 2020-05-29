@@ -1,7 +1,9 @@
 package com.chinkee.tmall.controller;
 
+import com.chinkee.tmall.comparator.*;
 import com.chinkee.tmall.pojo.*;
 import com.chinkee.tmall.service.*;
+import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,6 +13,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.HtmlUtils;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -30,6 +34,9 @@ public class ForeController {
     PropertyValueService propertyValueService;
     @Autowired
     ReviewService reviewService;
+
+    @Autowired
+    OrderItemService orderItemService;
 
     @RequestMapping("forehome")
     public String home(Model model){
@@ -93,7 +100,7 @@ public class ForeController {
         return "redirect:forehome";
     }
 
-    @RequestMapping("foreproduct")
+    @RequestMapping("foreproduct") // 访问地址foreproduct？pid=xx
     public String product(int pid, Model model){
         // int与integer的区别从大的方面来说就是基本数据类型与其包装类的区别
         // int初始值为0，Integer初始值为null
@@ -127,7 +134,7 @@ public class ForeController {
     @ResponseBody // 异步ajax的方式访问
     public String checkLogin(HttpSession httpSession){
         User user = (User) httpSession.getAttribute("user");
-        if(null == user)
+        if(null == user)  // IE浏览器Session不会存用户，以致无法识别是否登录
             return "fail";
         return "success";
     }
@@ -147,5 +154,158 @@ public class ForeController {
         return "success";
     }
 
+    @RequestMapping("forecategory")
+    public String category(int cid, String sort, Model model){
+        Category category = categoryService.get(cid);
+        productService.fill(category); // 为category填充产品
+        // 为产品填充销量和评价数据
+        productService.setSaleAndReviewNumber(category.getProducts());
+
+        if(null != sort){
+            switch (sort){
+                case "all":
+                    Collections.sort(category.getProducts(), new ProductAllComparator());
+                    break;
+
+                case "date":
+                    Collections.sort(category.getProducts(), new ProductDateComparator());
+                    break;
+
+                case "price":
+                    Collections.sort(category.getProducts(), new ProductPriceComparator());
+                    break;
+
+                case "review":
+                    Collections.sort(category.getProducts(), new ProductReviewComparator());
+                    break;
+
+                case "sale":
+                    Collections.sort(category.getProducts(), new ProductSaleComparator());
+                    break;
+            }
+        }
+
+        model.addAttribute("c", category);
+        return "fore/category";
+    }
+
+    @RequestMapping("foresearch")
+    public String search(String keyword, String sort, Model model){
+        // 根据keyword进行模糊查询，获取满足条件的前20个产品
+        PageHelper.offsetPage(0, 20);
+        List<Product> products = productService.search(keyword);
+        // 为这些产品设置销量和评价数量
+        productService.setSaleAndReviewNumber(products);
+
+        // 搜出来的产品排序，未完善
+        if(null != sort){
+            switch (sort){
+                case "all":
+                    Collections.sort(products, new ProductAllComparator());
+                    break;
+
+                case "date":
+                    Collections.sort(products, new ProductDateComparator());
+                    break;
+
+                case "price":
+                    Collections.sort(products, new ProductPriceComparator());
+                    break;
+
+                case "review":
+                    Collections.sort(products, new ProductReviewComparator());
+                    break;
+
+                case "sale":
+                    Collections.sort(products, new ProductSaleComparator());
+                    break;
+            }
+        }
+
+        model.addAttribute("ps", products);
+        return "fore/searchResult";
+    }
+
+    @RequestMapping("forebuyone")
+    public String buyOne(int pid, int num, HttpSession session){
+
+        int oiid = 0;
+
+        // 从session中获取用户对象user
+        User user = (User) session.getAttribute("user");
+        List<OrderItem> orderItems = orderItemService.listByUser(user.getId());
+
+        boolean found = false;
+        //如果已经存在这个产品对应的OrderItem，并且还没有生成订单，即还在购物车中。
+        //那么就应该在对应的OrderItem基础上，调整数量
+        for(OrderItem orderItem:orderItems){
+            if(orderItem.getProduct().getId().intValue() == pid){ // 这都是int类型，可以比较
+                orderItem.setNumber(orderItem.getNumber() + num);
+                orderItemService.update(orderItem);
+                found = true;
+                oiid = orderItem.getId();
+                break;
+            }
+        }
+
+        // 如果不存在对应的OrderItem,那么就新增一个订单项OrderItem
+        if(!found){
+            OrderItem orderItem = new OrderItem();
+            orderItem.setUid(user.getId());
+            orderItem.setPid(pid);
+            orderItem.setNumber(num);
+            orderItemService.add(orderItem);
+            oiid = orderItem.getId();
+        }
+
+        return "redirect:forebuy?oiid=" + oiid;
+    }
+
+    @RequestMapping("forebuy") // 用字符串数组获取多个oiid
+    public String buy(Model model, String[] oiid, HttpSession httpSession){
+        List<OrderItem> orderItems = new ArrayList<>(); // 准备一个泛型是OrderItem的集合
+        float total = 0;
+
+        for(String strid:oiid){
+            int id = Integer.parseInt(strid); // 通过Integer解析String为int
+            OrderItem orderItem = orderItemService.get(id);
+            total += orderItem.getProduct().getPromotePrice()*orderItem.getNumber();
+            orderItems.add(orderItem); // ArrayList增加元素方法，放入orderItems集合中
+        }
+
+        // 把订单项集合放在session的属性 "ois" 上
+        // 购物是一个过程，在这个过程把订单项属性放在session，等添加购物可以更快响应
+        httpSession.setAttribute("ois", orderItems);
+        // 把总价格放在 model的属性 "total" 上
+        model.addAttribute("total", total);
+        return "fore/buy";
+    }
+
+    // 与立即购买一样，只不过是返回值不同，加入后留在
+    @RequestMapping("foreaddCart")
+    @ResponseBody
+    public String addCart(int pid, int num, Model model, HttpSession session){
+        User user = (User) session.getAttribute("user");
+        List<OrderItem> orderItems = orderItemService.listByUser(user.getId());
+
+        boolean found = false;
+        for(OrderItem orderItem:orderItems){
+            if(orderItem.getProduct().getId().intValue() == pid){
+                orderItem.setNumber(orderItem.getNumber() + num);
+                orderItemService.update(orderItem);
+                found = true;
+                break;
+            }
+        }
+
+        if(!found){
+            OrderItem orderItem = new OrderItem();
+            orderItem.setUid(user.getId());
+            orderItem.setPid(pid);
+            orderItem.setNumber(num);
+            orderItemService.add(orderItem);
+        }
+        return "success";
+    }
 }
 

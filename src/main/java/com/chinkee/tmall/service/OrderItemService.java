@@ -18,4 +18,7 @@ public interface OrderItemService {
 
     // 根据产品获取销售量的方法
     int getSaleCount(int pid);
+
+    // 根据用户列出购物订单项
+    List<OrderItem> listByUser(int uid);
 }
