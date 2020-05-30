@@ -5,7 +5,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 		 pageEncoding="UTF-8" isELIgnored="false"%>
 
-<nav class="top ">
+<nav class="top "> <!-- contextPath:tmall_ssm。点击之后是停留在当前页面，通过other拦截器改变访问地址 -->
 	<a href="${contextPath}">
 		<span style="color:#C40000;margin:0px" class=" glyphicon glyphicon-home redColor"></span>
 		天猫首页
