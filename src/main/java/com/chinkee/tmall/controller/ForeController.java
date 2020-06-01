@@ -4,6 +4,7 @@ import com.chinkee.tmall.comparator.*;
 import com.chinkee.tmall.pojo.*;
 import com.chinkee.tmall.service.*;
 import com.github.pagehelper.PageHelper;
+import org.apache.commons.lang.math.RandomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,9 +14,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.HtmlUtils;
 
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Controller
 @RequestMapping("")
@@ -37,6 +38,9 @@ public class ForeController {
 
     @Autowired
     OrderItemService orderItemService;
+
+    @Autowired
+    OrderService orderService;
 
     @RequestMapping("forehome")
     public String home(Model model){
@@ -281,10 +285,10 @@ public class ForeController {
         return "fore/buy";
     }
 
-    // 与立即购买一样，只不过是返回值不同，加入后留在
+    // 与立即购买一样，只不过是返回值不同，加入后购物车按钮变灰，对接imgAndInfo.jsp
     @RequestMapping("foreaddCart")
     @ResponseBody
-    public String addCart(int pid, int num, Model model, HttpSession session){
+    public String addCart(int pid, int num, HttpSession session){
         User user = (User) session.getAttribute("user");
         List<OrderItem> orderItems = orderItemService.listByUser(user.getId());
 
@@ -314,6 +318,74 @@ public class ForeController {
         List<OrderItem> orderItems = orderItemService.listByUser(user.getId());
         model.addAttribute("ois", orderItems);
         return "fore/cart";
+    }
+
+    @RequestMapping("forechangeOrderItem")
+    @ResponseBody
+    public String changeOrderItem(HttpSession session, int pid, int num){
+        User user = (User) session.getAttribute("user");
+        if(null == user)
+            return "fail"; //  判断用户是否登录，对接cartPage.jsp
+
+        List<OrderItem> orderItems = orderItemService.listByUser(user.getId());
+        for(OrderItem orderItem:orderItems){
+            if(orderItem.getProduct().getId().intValue() == pid){
+                orderItem.setNumber(num);
+                orderItemService.update(orderItem);
+                break;
+            }
+        }
+        return "success";
+    }
+
+    @RequestMapping("foredeleteOrderItem")
+    @ResponseBody
+    public String deleteOrderItem(int oiid, HttpSession session){
+        User user = (User) session.getAttribute("user");
+        if(null == user){
+            return "fail";
+        }
+
+        orderItemService.delete(oiid); // 后台工作，处理数据库业务
+        return "success"; // 前端工作，处理页面显示
+    }
+
+    @RequestMapping("forecreateOrder")
+    public String createOrder(HttpSession session, Order order){
+        User  user = (User) session.getAttribute("user");
+        // 根据当前时间加上一个4位随机数生成订单号(0-9999)
+        String orderCode = new SimpleDateFormat("yyyyMMddHHmmssSSS")
+                .format(new Date()) + RandomUtils.nextInt(10000);
+
+        TimeZone time = TimeZone.getTimeZone("GMT+8");
+        TimeZone.setDefault(time);
+        //DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Calendar calendar = Calendar.getInstance();
+        Date date = calendar.getTime();
+
+
+        // 根据上述参数，创建订单对象
+        order.setOrderCode(orderCode);
+        order.setCreateDate(date);
+        order.setUid(user.getId());
+        order.setStatus(OrderService.waitPay);
+        // 从session中获取订单项集合 ( 在结算功能的buy()，订单项集合被放到了session中 )
+        List<OrderItem> orderItems = (List<OrderItem>) session.getAttribute("ois");
+
+        // 把订单加入到数据库，并且遍历订单项集合，设置每个订单项的order，更新到数据库
+        // 统计本次订单的总金额
+        float total = orderService.add(order, orderItems);
+        return "redirect:forealipay?oid=" + order.getId() + "&total=" + total;
+    }
+
+    @RequestMapping("forepayed")
+    public String payed(Model model, int oid){
+        Order order = orderService.get(oid);
+        order.setStatus(OrderService.waitDelivery);
+        order.setPayDate(new Date());
+        orderService.update(order);
+        model.addAttribute("o", order); // 跳转页面
+        return "fore/payed";
     }
 }
 

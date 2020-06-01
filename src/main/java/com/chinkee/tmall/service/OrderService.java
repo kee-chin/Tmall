@@ -1,6 +1,7 @@
 package com.chinkee.tmall.service;
 
 import com.chinkee.tmall.pojo.Order;
+import com.chinkee.tmall.pojo.OrderItem;
 
 import java.util.List;
 
@@ -10,6 +11,8 @@ public interface OrderService {
     void add(Order order);
     void delete(int id);
     void update(Order order);
+
+    float add(Order order, List<OrderItem> orderItems);
 
     String waitPay = "waitPay";
     String waitDelivery = "waitDelivery";

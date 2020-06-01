@@ -17,7 +17,7 @@
 			<li>实付款：<span class="payedInfoPrice">
 			￥<fmt:formatNumber type="number" value="${param.total}" minFractionDigits="2"/>
 			</li>
-			<li>预计08月08日送达	</li>
+			<li>预计后天送达	</li>
 		</ul>
 				
 		<div class="paedCheckLinkDiv">

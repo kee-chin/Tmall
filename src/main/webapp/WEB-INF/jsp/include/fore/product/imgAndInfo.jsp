@@ -55,7 +55,7 @@ $(function(){
                                 addCartpage,
                                 {"pid":pid,"num":num},
                                 function(result){
-                                    if("success"==result){
+                                    if("success"==result){          <!--添加后变灰-->
                                         $(".addCartButton").html("已加入购物车");
                                         $(".addCartButton").attr("disabled","disabled");
                                         $(".addCartButton").css("background-color","lightgray")

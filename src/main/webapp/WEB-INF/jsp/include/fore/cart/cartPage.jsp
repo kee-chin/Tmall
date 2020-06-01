@@ -30,7 +30,7 @@ $(function(){
 				    {"oiid":deleteOrderItemid},
 				    function(result){
 						if("success"==result){
-							<!--添加后变灰-->
+
 							$("tr.cartProductItemTR[oiid="+deleteOrderItemid+"]").hide();
 						}
 						else{
@@ -203,7 +203,7 @@ function syncPrice(pid,num,price){
 	var page = "forechangeOrderItem";
 	$.post(
 		    page,
-		    {"pid":pid,"number":num},
+		    {"pid":pid,"num":num},
 		    function(result){
 				if("success"!=result){
 					location.href="loginPage";
