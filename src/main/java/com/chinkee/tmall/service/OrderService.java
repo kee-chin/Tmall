@@ -14,6 +14,8 @@ public interface OrderService {
 
     float add(Order order, List<OrderItem> orderItems);
 
+    List<Order> list(int uid, String excludedStatus);
+
     String waitPay = "waitPay";
     String waitDelivery = "waitDelivery";
     String waitConfirm = "waitConfirm";

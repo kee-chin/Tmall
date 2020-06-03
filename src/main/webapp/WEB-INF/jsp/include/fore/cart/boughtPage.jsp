@@ -97,6 +97,7 @@ $(function(){
 	</div>
 	
 	<div class="orderListItem">
+		<!--取出每个订单，显示其创建日期，订单号，总数量和总金额等-->
 		<c:forEach items="${os}" var="o">
 			<table class="orderListItemTable" orderStatus="${o.status}" oid="${o.id}">
 				<tr class="orderListItemFirstTR">
@@ -119,6 +120,7 @@ $(function(){
 						
 					</td>
 				</tr>
+				<!--显示每个订单项对应的产品的图片，标题，原始价格，优惠价格等-->
 				<c:forEach items="${o.orderItems}" var="oi" varStatus="st">
 					<tr class="orderItemProductInfoPartTR" >
 						<td class="orderItemProductInfoPartTD"><img width="80" height="80" src="img/productSingle_middle/${oi.product.firstProductImage.id}.jpg"></td>
@@ -128,7 +130,7 @@ $(function(){
 								<div class="orderListItemProductLinkInnerDiv">
 											<img src="img/site/creditcard.png" title="支持信用卡支付">
 											<img src="img/site/7day.png" title="消费者保障服务,承诺7天退货">
-											<img src="img/site/promise.png" title="消费者保障服务,承诺如实描述">						
+											<img src="img/site/promise.png" title="消费者保障服务,承诺如实描述">
 								</div>
 							</div>
 						</td>

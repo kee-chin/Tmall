@@ -77,7 +77,7 @@ public class OrderItemServiceImpl implements OrderItemService {
         }
         order.setTotalMoney(totalMoney);
         order.setTotalNumber(totalNumber);
-        // 最后再把订单项设置在订单的orderItems属性上。 设置在
+        // 最后再把订单项设置在订单的orderItems属性上。
         order.setOrderItems(orderItems);
     }
 

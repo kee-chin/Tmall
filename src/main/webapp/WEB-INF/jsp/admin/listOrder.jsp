@@ -54,6 +54,7 @@
                     <td align="center">${o.totalNumber}</td>
                     <td align="center">${o.user.name}</td>
 
+                    <!--时间标准化-->
                     <td><fmt:formatDate value="${o.createDate}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
                     <td><fmt:formatDate value="${o.payDate}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
                     <td><fmt:formatDate value="${o.deliveryDate}" pattern="yyyy-MM-dd HH:mm:ss"/></td>

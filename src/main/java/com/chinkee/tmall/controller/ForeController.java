@@ -5,6 +5,7 @@ import com.chinkee.tmall.pojo.*;
 import com.chinkee.tmall.service.*;
 import com.github.pagehelper.PageHelper;
 import org.apache.commons.lang.math.RandomUtils;
+import org.apache.taglibs.standard.tag.common.fmt.FormatDateSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.HtmlUtils;
 
 import javax.servlet.http.HttpSession;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -55,6 +55,11 @@ public class ForeController {
         return "fore/home";
     }
 
+    // 实际上这业务只是判断用户名是否已注册，与数据库交互，
+    // 并不是注册页面，而是在该页面上显示"用户名已存在，不可使用"，
+    // 所以需要先访问注册页面，再实现这功能。由于register.jsp 是放在WEB-INF目录下的，
+    // 是无法通过浏览器直接访问的。为了访问这些放在WEB-INF下的jsp，
+    // 准备一个专门的PageController类，专门做服务端跳转。
     // registerPage.jsp form方法调用
     @RequestMapping("foreregister")
     public String register(Model model, User user){
@@ -350,6 +355,7 @@ public class ForeController {
         return "success"; // 前端工作，处理页面显示
     }
 
+    // order参数从浏览器forebuy页面获取，对接buyPage.jsp
     @RequestMapping("forecreateOrder")
     public String createOrder(HttpSession session, Order order){
         User  user = (User) session.getAttribute("user");
@@ -362,7 +368,6 @@ public class ForeController {
         //DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Calendar calendar = Calendar.getInstance();
         Date date = calendar.getTime();
-
 
         // 根据上述参数，创建订单对象
         order.setOrderCode(orderCode);
@@ -378,7 +383,7 @@ public class ForeController {
         return "redirect:forealipay?oid=" + order.getId() + "&total=" + total;
     }
 
-    @RequestMapping("forepayed")
+    @RequestMapping("forepayed") // 访问地址forepayed?oid=
     public String payed(Model model, int oid){
         Order order = orderService.get(oid);
         order.setStatus(OrderService.waitDelivery);
@@ -386,6 +391,49 @@ public class ForeController {
         orderService.update(order);
         model.addAttribute("o", order); // 跳转页面
         return "fore/payed";
+    }
+
+    @RequestMapping("forebought")
+    public String bought(Model model, HttpSession httpSession){
+        User user = (User) httpSession.getAttribute("user");
+        // 查询user所有的状态不是"delete" 的订单集合os
+        List<Order> orders = orderService.list(user.getId(), OrderService.delete);
+        // 为这些订单填充订单项，列出每项订单的细则
+        orderItemService.fill(orders);
+
+        model.addAttribute("os", orders);
+
+        return "fore/bought";
+    }
+
+    @RequestMapping("foreconfirmPay")
+    public String confirmPay(Model model, int oid){
+        Order order = orderService.get(oid);
+        orderItemService.fill(order); // 为订单对象填充订单项
+        model.addAttribute("o", order);
+        return "fore/confirmPay";
+    }
+
+    @RequestMapping("foreorderConfirmed")
+    public String orderConfirmed(int oid){
+        Order order = orderService.get(oid);
+
+        // 修改对象o的状态为等待评价，修改其确认支付时间
+        order.setStatus(OrderService.waitReview);
+        order.setConfirmDate(new Date());
+        orderService.update(order);
+
+        return "fore/orderConfirmed";
+    }
+
+    @RequestMapping("foredeleteOrder")
+    @ResponseBody // 不加这个就会去找对应的 jsp 文件
+    public String deleteOrder(int oid){
+        Order order = orderService.get(oid);
+        order.setStatus(OrderService.delete);
+        orderService.update(order); // 更新到数据库
+
+        return "success";
     }
 }
 
