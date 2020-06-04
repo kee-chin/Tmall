@@ -5,7 +5,6 @@ import com.chinkee.tmall.pojo.*;
 import com.chinkee.tmall.service.*;
 import com.github.pagehelper.PageHelper;
 import org.apache.commons.lang.math.RandomUtils;
-import org.apache.taglibs.standard.tag.common.fmt.FormatDateSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -384,8 +383,17 @@ public class ForeController {
     }
 
     @RequestMapping("forepayed") // 访问地址forepayed?oid=
-    public String payed(Model model, int oid){
+    public String payed(Model model, int oid, HttpSession session){
         Order order = orderService.get(oid);
+
+        /** 从session中获取订单项集合 ( 在结算功能的buy()，订单项集合被放到了session中 )
+        List<OrderItem> orderItems = (List<OrderItem>) session.getAttribute("ois");
+        float total = orderService.add(order, orderItems);
+        if(order.getStatus() != OrderService.waitPay){
+            return "redirect:forealipay?oid=" + order.getId() + "&total=" + total;
+        }
+         **/
+
         order.setStatus(OrderService.waitDelivery);
         order.setPayDate(new Date());
         orderService.update(order);
@@ -409,6 +417,12 @@ public class ForeController {
     @RequestMapping("foreconfirmPay")
     public String confirmPay(Model model, int oid){
         Order order = orderService.get(oid);
+
+        /**
+        if(order.getStatus() != OrderService.waitDelivery){
+            return "fore/home";
+        }**/
+
         orderItemService.fill(order); // 为订单对象填充订单项
         model.addAttribute("o", order);
         return "fore/confirmPay";
@@ -434,6 +448,52 @@ public class ForeController {
         orderService.update(order); // 更新到数据库
 
         return "success";
+    }
+
+    @RequestMapping("forereview")
+    public String review(Model model, int oid){
+        Order order = orderService.get(oid);
+        orderItemService.fill(order);
+
+        // 获取第一个订单项对应的产品
+        Product product = order.getOrderItems().get(0).getProduct();
+        // 获取这个产品的评价集合
+        List<Review> reviews = reviewService.list(product.getId());
+        // 为产品设置评价数量和销量
+        productService.setSaleAndReviewNumber(product);
+
+        // 把产品，订单和评价集合放在request上
+        model.addAttribute("p", product);
+        model.addAttribute("o", order);
+        model.addAttribute("reviews", reviews);
+        return "fore/review";
+    }
+
+
+    @RequestMapping("foredoreview")
+    public String doreview(HttpSession session, String content,
+                           @RequestParam("pid")int pid, @RequestParam("oid")int oid){
+        Order order = orderService.get(oid);
+
+        order.setStatus(OrderService.finish);
+        orderService.update(order);
+
+        // 获取产品
+        // Product product = productService.get(pid);
+        // 获取评价内容 对评价信息进行转义
+        content = HtmlUtils.htmlEscape(content);
+
+        // 为评价对象review设置 评价信息，产品，时间，用户
+        User user = (User) session.getAttribute("user");
+        Review review = new Review();
+        review.setUid(user.getId());
+        review.setCreateDate(new Date());
+        review.setPid(pid);
+        review.setContent(content);
+        reviewService.add(review);
+
+        // 客户端跳转到/forereview：评价产品页面，并带上参数showonly=true
+        return "redirect:forereview?oid=" + oid + "&showonly=true";
     }
 }
 

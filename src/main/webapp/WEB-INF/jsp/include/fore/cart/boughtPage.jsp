@@ -3,7 +3,7 @@
 <!-- 供购买者学习，请勿私自传播，否则自行承担相关法律责任-->
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8" isELIgnored="false"%>
+	pageEncoding="UTF-8" isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix='fmt' uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -46,6 +46,7 @@ $(function(){
 				    {"oid":deleteOrderid},
 				    function(result){
 						if("success"==result){
+						    <!--获取返回字符串是success的时候，隐藏掉当前这行订单数据，不会删除这条数据-->
 							$("table.orderListItemTable[oid="+deleteOrderid+"]").hide();
 						}
 						else{
@@ -147,7 +148,7 @@ $(function(){
 								<span class="orderListItemNumber">${o.totalNumber}</span>
 							</td>
 							<td valign="top" rowspan="${fn:length(o.orderItems)}" width="120px" class="orderListItemProductRealPriceTD orderItemOrderInfoPartTD">
-								<div class="orderListItemProductRealPrice">￥<fmt:formatNumber  minFractionDigits="2"  maxFractionDigits="2" type="number" value="${o.total}"/></div>
+								<div class="orderListItemProductRealPrice">￥<fmt:formatNumber  minFractionDigits="2"  maxFractionDigits="2" type="number" value="${o.totalMoney}"/></div>
 								<div class="orderListItemPriceWithTransport">(含运费：￥0.00)</div>
 							</td>
 							<td valign="top" rowspan="${fn:length(o.orderItems)}" class="orderListItemButtonTD orderItemOrderInfoPartTD" width="100px">
@@ -157,7 +158,7 @@ $(function(){
 									</a>
 								</c:if>
 								<c:if test="${o.status=='waitPay' }">
-									<a href="forealipay?oid=${o.id}&total=${o.total}">
+									<a href="forealipay?oid=${o.id}&total=${o.totalMoney}">
 										<button class="orderListItemConfirm">付款</button>
 									</a>								
 								</c:if>

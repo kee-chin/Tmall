@@ -90,7 +90,7 @@ public class OrderServiceImpl implements OrderService {
     public List<Order> list(int uid, String excludedStatus) {
         OrderExample orderExample = new OrderExample();
         orderExample.createCriteria().andUidEqualTo(uid).andStatusNotEqualTo(excludedStatus);
-        orderExample.setOrderByClause("id asc");
+        orderExample.setOrderByClause("id desc");
         return orderMapper.selectByExample(orderExample);
     }
 

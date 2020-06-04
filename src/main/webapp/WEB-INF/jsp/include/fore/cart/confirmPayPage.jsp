@@ -48,7 +48,7 @@
 		</table>
 		
 		<div class="confirmPayOrderItemText pull-right">
-			实付款： <span class="confirmPayOrderItemSumPrice">￥<fmt:formatNumber type="number" value="${o.total}" minFractionDigits="2"/></span>
+			实付款： <span class="confirmPayOrderItemSumPrice">￥<fmt:formatNumber type="number" value="${o.totalMoney}" minFractionDigits="2"/></span>
 		</div>
 		
 		
