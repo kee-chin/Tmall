@@ -33,6 +33,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         // 从请求获取session
         HttpSession session = servletRequest.getSession();
 
+        // categorycontroller中的真实路径：D:\project\tmall\target\tmall_chen\
         // 获取访问路径：http://localhost:8080/tmall_ssm
         String contextPath = session.getServletContext().getContextPath();
 

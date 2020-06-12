@@ -85,6 +85,9 @@ public class CategoryController {
         System.out.println(uploadedImageFile.getImage());
         System.out.println(file);
          */
+        System.out.println(uploadedImageFile);
+        System.out.println(imageFolder);
+        System.out.println(file);
 
         // 通过 UploadedImageFile 把浏览器传递过来的图片保存在上述指定的位置
         uploadedImageFile.getImage().transferTo(file);

@@ -22,6 +22,9 @@
     <!--开通静态资源的访问 否则访问图片、css、js等文件可能出错-->
     <mvc:default-servlet-handler />
 
+    <!-- WEB-INF目录是被保护起来的，其下的jsp页面不能直接运行，只能通过控制器跳转来访问；-->
+    <!-- 静态资源（js、css、img）也不能被WEB-INF目录外的其他文件直接引用 -->
+    <!-- 想要引入WEB-INF下的静态资源，则得通过springmvc的配置文件进行设置 -->
     <!-- 视图定位 定位到WEB-INF/jsp/*.jsp中 --> <!-- springMVC中的V -->
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="viewClass"

@@ -28,7 +28,7 @@
 				<a class="productLink" href="foreproduct?pid=${p.id}">
 				 ${fn:substring(p.name, 0, 50)}
 				</a>
-				
+				<br/>
 				<a  class="tmallLink" href="foreproduct?pid=${p.id}">天猫专卖</a>
 	
 				<div class="show1 productInfo">

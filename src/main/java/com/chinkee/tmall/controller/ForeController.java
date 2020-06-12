@@ -17,7 +17,7 @@ import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-@Controller
+@Controller // 注解，注明Controller类，不用注解则需实现Controller接口
 @RequestMapping("")
 public class ForeController {
     @Autowired
@@ -162,7 +162,7 @@ public class ForeController {
         return "success";
     }
 
-    @RequestMapping("forecategory")
+    @RequestMapping("forecategory") // 客户端访问需要带着cid参数
     public String category(int cid, String sort, Model model){
         Category category = categoryService.get(cid);
         productService.fill(category); // 为category填充产品
@@ -379,6 +379,9 @@ public class ForeController {
         // 把订单加入到数据库，并且遍历订单项集合，设置每个订单项的order，更新到数据库
         // 统计本次订单的总金额
         float total = orderService.add(order, orderItems);
+        // 客户端跳转
+        // url会跟随着变，变为xxx ，这时已是全新的独立的请求，不能够再使用前面获得的数据
+        // 所以后面加上在这获取的数据参数，alipay需要oid和total参数
         return "redirect:forealipay?oid=" + order.getId() + "&total=" + total;
     }
 
